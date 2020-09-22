@@ -1,42 +1,45 @@
 import os
 from terminaltables import AsciiTable
 from colorama import Fore
+import argparse
 
-sites_available_path = '/etc/nginx/sites-available';
-sites_enabled_path = '/etc/nginx/sites-enabled';
+sites_available_path = '/etc/nginx/sites-available'
+sites_enabled_path = '/etc/nginx/sites-enabled'
 
-sites_available = os.listdir(sites_available_path);
-sites_enabled = os.listdir(sites_enabled_path);
+sites_available = os.listdir(sites_available_path)
+sites_enabled = os.listdir(sites_enabled_path)
 
 # os.symlink(src, dst)
 
+
+def highlight(text):
+    return Fore.GREEN + text + Fore.RESET
+
+
 def list_conf():
-  table_data = [['Conf File Name', 'Enabled?']];
+    table_data = [['Conf File Name', 'Status']]
 
-  for i in range(len(sites_available)):
-    table_data.append([ 
-      sites_available[i], 
-      "v" if sites_available[i] in sites_enabled else  ""]
-    );
+    for i in range(len(sites_available)):
+        current_conf = sites_available[i]
+        is_enabled = current_conf in sites_enabled
 
-  table = AsciiTable(table_data)
-  print table.table
+        if (is_enabled):
+            table_data.append([highlight(current_conf), highlight("enable")])
+        else:
+            table_data.append([current_conf, ""])
+
+    print AsciiTable(table_data).table
+
 
 def main():
-	while(True):
-		try:	
-			print Fore.CYAN + "\n1.Hosts Discovery" +Fore.RESET
-			print Fore.YELLOW+"Press ctrl+c to exit..." +Fore.RESET
-			opt=int(input(Fore.CYAN+"\nEnter choice: "+Fore.RESET))
-			if opt==1:
-				list_conf()
-			else:
-				print Fore.RED+"\nEnter correct choice...!!" +Fore.RESET
-		except KeyboardInterrupt:
-			print Fore.RED+"\nABORTED PROGRAM....!!" +Fore.RESET
-			sys.exit(0)
-		except:
-			print Fore.RED+"\nEnter correct choice...!!" +Fore.RESET
-	
+    parser = argparse.ArgumentParser(
+        description='nginx-cli | show and manage configure file')
+    parser.add_argument('list', metavar='N', help='List configure files')
+    args = parser.parse_args()
+
+    if (args.list):
+        list_conf()
+
+
 if __name__ == '__main__':
-	main()
+    main()
