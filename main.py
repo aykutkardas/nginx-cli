@@ -1,22 +1,44 @@
 import os
+import argparse
+from os import path
 from terminaltables import AsciiTable
 from colorama import Fore
-import argparse
 
-sites_available_path = '/etc/nginx/sites-available'
-sites_enabled_path = '/etc/nginx/sites-enabled'
-
-sites_available = os.listdir(sites_available_path)
-sites_enabled = os.listdir(sites_enabled_path)
-
-# os.symlink(src, dst)
+sites_available_path = '/etc/nginx/sites-available/'
+sites_enabled_path = '/etc/nginx/sites-enabled/'
 
 
 def highlight(text):
     return Fore.GREEN + text + Fore.RESET
 
 
+def enabled_conf(conf_name):
+    conf_enabled_path = sites_enabled_path + conf_name
+    conf_available_path = sites_available_path + conf_name
+
+    is_exists = path.exists(conf_enabled_path)
+
+    if is_exists:
+        return list_conf()
+
+    os.symlink(conf_available_path, conf_enabled_path)
+    list_conf()
+
+
+def disabled_conf(conf_name):
+    conf_enabled_path = sites_enabled_path + conf_name
+    is_exists = path.exists(conf_enabled_path)
+    if not is_exists:
+        return list_conf()
+
+    os.remove(conf_enabled_path)
+    list_conf()
+
+
 def list_conf():
+    sites_available = os.listdir(sites_available_path)
+    sites_enabled = os.listdir(sites_enabled_path)
+
     table_data = [['Conf File Name', 'Status']]
 
     for i in range(len(sites_available)):
@@ -28,17 +50,23 @@ def list_conf():
         else:
             table_data.append([current_conf, ""])
 
-    print AsciiTable(table_data).table
+    table = AsciiTable(table_data).table
+    print(table)
 
 
 def main():
     parser = argparse.ArgumentParser(
         description='nginx-cli | show and manage configure file')
-    parser.add_argument('list', metavar='N', help='List configure files')
+    parser.add_argument('operation')
+    parser.add_argument('--name', required=False)
     args = parser.parse_args()
 
-    if (args.list):
+    if (args.operation == 'list'):
         list_conf()
+    elif (args.operation == 'enabled'):
+        enabled_conf(args.name)
+    elif (args.operation == 'disabled'):
+        disabled_conf(args.name)
 
 
 if __name__ == '__main__':
