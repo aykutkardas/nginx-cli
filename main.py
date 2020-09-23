@@ -3,40 +3,41 @@ from terminaltables import AsciiTable
 from colorama import Fore
 import click
 
-sites_available_path = '/etc/nginx/sites-available/'
-sites_enabled_path = '/etc/nginx/sites-enabled/'
+sites_available_path = '/sites-available/'
+sites_enabled_path = '/sites-enabled/'
+nginx_default_path = '/etc/nginx'
 
 
 def highlight(text):
     return Fore.GREEN + text + Fore.RESET
 
 
-def enable_conf(conf_name):
-    conf_enabled_path = sites_enabled_path + conf_name
-    conf_available_path = sites_available_path + conf_name
+def enable_conf(conf_name, nginx_path):
+    conf_enabled_path = nginx_path + sites_enabled_path + conf_name
+    conf_available_path = nginx_path + sites_available_path + conf_name
 
     is_exists = os.path.exists(conf_enabled_path)
 
     if is_exists:
-        return list_conf()
+        return list_conf(nginx_path)
 
     os.symlink(conf_available_path, conf_enabled_path)
-    list_conf()
+    list_conf(nginx_path)
 
 
-def disable_conf(conf_name):
-    conf_enabled_path = sites_enabled_path + conf_name
+def disable_conf(conf_name, nginx_path):
+    conf_enabled_path = nginx_path + sites_enabled_path + conf_name
     is_exists = os.path.exists(conf_enabled_path)
     if not is_exists:
-        return list_conf()
+        return list_conf(nginx_path)
 
     os.remove(conf_enabled_path)
-    list_conf()
+    list_conf(nginx_path)
 
 
-def list_conf():
-    sites_available = os.listdir(sites_available_path)
-    sites_enabled = os.listdir(sites_enabled_path)
+def list_conf(nginx_path):
+    sites_available = os.listdir(nginx_path + sites_enabled_path)
+    sites_enabled = os.listdir(nginx_path + sites_available_path)
 
     table_data = [['Conf File Name', 'Status']]
 
@@ -54,22 +55,19 @@ def list_conf():
 
 
 @click.command()
-@click.option('--enabled_path', default=sites_enabled_path,  prompt='Sites Enabled Path?',
-              type=click.Path(dir_okay=True, exists=True))
-@click.option('--available_path', default=sites_available_path, prompt='Sites Available Path?',
-              type=click.Path(dir_okay=True, exists=True))
+@click.option('--nginx_path', default=nginx_default_path, prompt='Nginx Path?',
+              type=click.Path())
 @click.option('--operation', default="list", prompt='Operation Type?',
               type=click.Choice(['list', 'enable', 'disable'], case_sensitive=False))
 @click.option('--name', prompt='Operation Name?',
               help='The person to greet.')
-def manage(enabled_path, available_path, operation, name):
-    print(enabled_path, available_path)
+def manage(nginx_path, operation, name):
     if operation == 'list':
-        list_conf()
+        list_conf(nginx_path)
     elif operation == 'enable':
-        enable_conf(name)
+        enable_conf(name, nginx_path)
     elif operation == 'disable':
-        disable_conf(name)
+        disable_conf(name, nginx_path)
 
 
 if __name__ == '__main__':
