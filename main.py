@@ -11,6 +11,10 @@ def highlight(text):
     return Fore.GREEN + text + Fore.RESET
 
 
+def setup():
+    print os.getcwd() + '/main.py'
+
+
 def enable_conf(conf_name):
     conf_enabled_path = sites_enabled_path + conf_name
     conf_available_path = sites_available_path + conf_name
@@ -66,6 +70,8 @@ def main():
         enable_conf(args.name)
     elif (args.operation == 'disable'):
         disable_conf(args.name)
+    elif (args.operation == 'setup'):
+        setup()
 
 
 if __name__ == '__main__':

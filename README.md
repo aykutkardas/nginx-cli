@@ -18,7 +18,7 @@ pip install
 
 **Step 3:** Added alias
 ```sh
-echo "alias ngx=python `pwd`/main.py" >> ~/.bashrc
+echo "alias ngx=\"python `python ./main.py setup`\"" >> ~/.bashrc
 ```
 
 ---
