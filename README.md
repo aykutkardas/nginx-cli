@@ -3,6 +3,28 @@
 Allows viewing and managing Nginx configuration files. It simplifies the relationship between sites_available and sites_enabled and makes it easy to manage.
 
 
+## Install
+
+**Step 1:** Clone repository
+
+```sh
+git clone https://github.com/aykutkardas/nginx-cli
+```
+
+**Step 2:** Install dependencies
+```sh
+pip install
+```
+
+**Step 3:** Added alias
+```sh
+echo "alias ngx=python `pwd`/main.py" >> ~/.bashrc
+```
+
+---
+
+## Usage
+
 
 List all configurations with their statuses
 
