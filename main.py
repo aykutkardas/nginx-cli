@@ -54,20 +54,28 @@ def list_conf(nginx_path):
     print(table)
 
 
-@click.command()
-@click.option('--nginx_path', default=nginx_default_path, prompt='Nginx Path?',
-              type=click.Path())
-@click.option('--operation', default="list", prompt='Operation Type?',
-              type=click.Choice(['list', 'enable', 'disable'], case_sensitive=False))
-@click.option('--name', prompt='Conf File Name?',
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
+def list():
+    list_conf(nginx_default_path)
+
+
+@cli.command()
+@click.option('--name', '-n', prompt='Conf File Name?',
               help='Name of the configuration file to be affected')
-def manage(nginx_path, operation, name):
-    if operation == 'list':
-        list_conf(nginx_path)
-    elif operation == 'enable':
-        enable_conf(name, nginx_path)
-    elif operation == 'disable':
-        disable_conf(name, nginx_path)
+def enable(name):
+    enable_conf(name, nginx_default_path)
+
+
+@cli.command()
+@click.option('--name', '-n', prompt='Conf File Name?',
+              help='Name of the configuration file to be affected')
+def disable(name):
+    disable_conf(name, nginx_default_path)
 
 
 if __name__ == '__main__':
@@ -80,4 +88,4 @@ if __name__ == '__main__':
             |___/  
     NGINX-CLI                           AYKUT KARDAS
        """ + Fore.RESET)
-    manage()
+    cli()
