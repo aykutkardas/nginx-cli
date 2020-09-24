@@ -2,10 +2,21 @@ import os
 import click
 from terminaltables import AsciiTable
 from colorama import Fore
+from subprocess import Popen, PIPE
+from configparser import ConfigParser
+
+config = ConfigParser()
 
 sites_available_path = '/sites-available/'
 sites_enabled_path = '/sites-enabled/'
 nginx_default_path = '/etc/nginx'
+
+if os.path.exists('config.ini'):
+    config.read('config.ini')
+    if config['nginx']:
+        sites_available_path = config['nginx']['sites_available'] + '/'
+        sites_enabled_path = config['nginx']['sites_enabled'] + '/'
+        nginx_default_path = config['nginx']['nginx_root']
 
 
 def highlight(text):
@@ -54,9 +65,63 @@ def list_conf(nginx_path):
     print(table)
 
 
+def generate_conf(data, alias):
+    config[alias] = data
+    with open('config.ini', 'w') as conf:
+        config.write(conf)
+
+    print(highlight("Configuration '" + alias + "' set."))
+
+
+def auto_init():
+    process = Popen('which nginx', shell=True, stdout=PIPE)
+    (output, err) = process.communicate()
+    exit_code = process.wait()
+
+    if exit_code is not 0:
+        print(Fore.RED + 'No nginx installation found. Please try manuel mode.' + Fore.RESET)
+        exit()
+
+    if output:
+        executable = output.strip()
+        print(highlight("Nginx executable found: " + executable))
+
+        conf_detect = Popen(executable
+                            + " -V 2>&1 | grep -o '\-\-conf-path=\(.*conf\)' | cut -d '=' -f2 | sed 's/\/nginx.conf//g'",
+                            shell=True, stdout=PIPE)
+        (conf_output, conf_err) = conf_detect.communicate()
+        conf_code = conf_detect.wait()
+
+        if conf_code is not 0:
+            print(Fore.RED + 'Nginx root path detection failed. Please try manuel mode.' + Fore.RESET)
+            exit()
+
+        if conf_output:
+            root_path = conf_output.strip()
+            print(highlight("Nginx root path detected: " + root_path))
+
+            if not os.path.exists(root_path + '/sites-available') and \
+                    os.path.exists(root_path + '/sites-enabled'):
+                print(Fore.RED + 'Nginx sites-available or sites-enabled folder is not exist. Please try manuel mode.'
+                      + Fore.RESET)
+                exit()
+
+            generate_conf({
+                'executable': executable,
+                'nginx_root': root_path,
+                'sites_available': '/sites-available',
+                'sites_enabled': '/sites-enabled'
+            }, 'nginx')
+
+
 @click.group()
 def cli():
     pass
+
+
+@cli.command()
+def init():
+    auto_init()
 
 
 @cli.command()
