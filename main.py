@@ -1,7 +1,7 @@
 import os
+import click
 from terminaltables import AsciiTable
 from colorama import Fore
-import click
 
 sites_available_path = '/sites-available/'
 sites_enabled_path = '/sites-enabled/'
@@ -36,8 +36,8 @@ def disable_conf(conf_name, nginx_path):
 
 
 def list_conf(nginx_path):
-    sites_available = os.listdir(nginx_path + sites_enabled_path)
-    sites_enabled = os.listdir(nginx_path + sites_available_path)
+    sites_available = os.listdir(nginx_path + sites_available_path)
+    sites_enabled = os.listdir(nginx_path + sites_enabled_path)
 
     table_data = [['Conf File Name', 'Status']]
 
