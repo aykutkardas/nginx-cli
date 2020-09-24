@@ -59,8 +59,8 @@ def list_conf(nginx_path):
               type=click.Path())
 @click.option('--operation', default="list", prompt='Operation Type?',
               type=click.Choice(['list', 'enable', 'disable'], case_sensitive=False))
-@click.option('--name', prompt='Operation Name?',
-              help='The person to greet.')
+@click.option('--name', prompt='Conf File Name?',
+              help='Name of the configuration file to be affected')
 def manage(nginx_path, operation, name):
     if operation == 'list':
         list_conf(nginx_path)
