@@ -80,14 +80,12 @@ def list_conf():
     sites_available = os.listdir("%s/%s" % (nginx_path, sites_available_path))
     sites_enabled = os.listdir("%s/%s" % (nginx_path, sites_enabled_path))
 
-    def add_table(conf, directory):
-        if conf in directory:
-            return highlight(conf), highlight("enable")
-        else:
-            return conf, ""
-
     table_header = {'Conf File Name': 'Status'}
-    table_data = dict(map(lambda conf: add_table(conf, sites_enabled), sites_available))
+    table_data = dict(
+        map(
+            lambda conf: (highlight(conf), highlight("enable")) if conf in sites_enabled else (conf, ""),
+            sites_available)
+    )
     table_header.update(table_data)
     click.echo(AsciiTable(table_header.items()).table)
 
