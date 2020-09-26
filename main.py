@@ -3,10 +3,10 @@ import click
 from terminaltables import AsciiTable
 from colorama import Fore
 from subprocess import Popen, PIPE
-from re import search, match
+from re import search
 
-sites_available_path = '/sites-available/'
-sites_enabled_path = '/sites-enabled/'
+sites_available_path = 'sites-available'
+sites_enabled_path = 'sites-enabled'
 
 
 def detect_nginx():
@@ -25,6 +25,15 @@ def detect_nginx():
     return False
 
 
+def detect_directories(nginx_path):
+    path_a = "%s/%s" % (nginx_path, sites_available_path)
+    path_e = "%s/%s" % (nginx_path, sites_enabled_path)
+
+    if os.path.exists(path_a) is False or os.path.exists(path_e) is False:
+        os.mkdir(os.path.join(nginx_path, sites_available_path))
+        os.mkdir(os.path.join(nginx_path, sites_enabled_path))
+
+
 def highlight(text):
     return Fore.GREEN + text + Fore.RESET
 
@@ -33,17 +42,12 @@ def enable_conf(conf_name):
     nginx_path = detect_nginx()
     if nginx_path is False:
         pass
+    detect_directories(nginx_path)
 
-    path_a = "%s%s%s" % (nginx_path, sites_available_path, conf_name)
-    path_e = "%s%s%s" % (nginx_path, sites_enabled_path, conf_name)
+    path_a = "%s/%s/%s" % (nginx_path, sites_available_path, conf_name)
+    path_e = "%s/%s/%s" % (nginx_path, sites_enabled_path, conf_name)
 
-    if os.path.exists(path_a) is False:
-        path_a = "%s/%s" % (nginx_path, conf_name)
-        path_e = "%s/%s" % (nginx_path, conf_name)
-
-    is_exists = os.path.exists(path_a)
-
-    if is_exists:
+    if os.path.exists(path_a):
         return list_conf()
 
     os.symlink(path_a, path_e)
@@ -55,17 +59,15 @@ def disable_conf(conf_name):
     if nginx_path is False:
         pass
 
-    path_e = "%s%s" % (nginx_path, sites_enabled_path)
+    detect_directories(nginx_path)
 
-    if os.path.exists(path_e) is False:
-        path_e = nginx_path
+    path_e = "%s/%s/%s" % (nginx_path, sites_enabled_path, conf_name)
 
-    conf_enabled_path = path_e + conf_name
-    is_exists = os.path.exists(conf_enabled_path)
+    is_exists = os.path.exists(path_e)
     if not is_exists:
         return list_conf()
 
-    os.remove(conf_enabled_path)
+    os.remove(path_e)
     list_conf()
 
 
@@ -73,30 +75,21 @@ def list_conf():
     nginx_path = detect_nginx()
     if nginx_path is False:
         pass
+    detect_directories(nginx_path)
 
-    path_a = "%s%s" % (nginx_path, sites_available_path)
-    path_e = "%s%s" % (nginx_path, sites_enabled_path)
+    sites_available = os.listdir("%s/%s" % (nginx_path, sites_available_path))
+    sites_enabled = os.listdir("%s/%s" % (nginx_path, sites_enabled_path))
 
-    if os.path.exists(path_a) is False:
-        path_a = nginx_path
-        path_e = nginx_path
-
-    sites_available = os.listdir(path_a)
-    sites_enabled = os.listdir(path_e)
-
-    table_data = [['Conf File Name', 'Status']]
-
-    for i in range(len(sites_available)):
-        current_conf = sites_available[i]
-        is_enabled = current_conf in sites_enabled
-
-        if is_enabled:
-            table_data.append([highlight(current_conf), highlight("enable")])
+    def add_table(conf, directory):
+        if conf in directory:
+            return highlight(conf), highlight("enable")
         else:
-            table_data.append([current_conf, ""])
+            return conf, ""
 
-    table = AsciiTable(table_data).table
-    print(table)
+    table_header = {'Conf File Name': 'Status'}
+    table_data = dict(map(lambda conf: add_table(conf, sites_enabled), sites_available))
+    table_header.update(table_data)
+    click.echo(AsciiTable(table_header.items()).table)
 
 
 @click.group()
