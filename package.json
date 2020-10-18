@@ -1,0 +1,27 @@
+{
+  "name": "nginx-cli",
+  "version": "0.0.1",
+  "description": "Allows viewing and managing Nginx configuration files.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aykutkardas/nginx-cli.git"
+  },
+  "bin": {
+    "ngx": "./index.js"
+  },
+  "keywords": [
+    "nginx",
+    "cli",
+    "tool"
+  ],
+  "author": "Aykut Kardaş",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aykutkardas/nginx-cli/issues"
+  },
+  "homepage": "https://github.com/aykutkardas/nginx-cli#readme"
+}
