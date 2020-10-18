@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/aykutkardas/nginx-cli/issues"
   },
-  "homepage": "https://github.com/aykutkardas/nginx-cli#readme"
+  "homepage": "https://github.com/aykutkardas/nginx-cli#readme",
+  "dependencies": {
+    "yargs": "^13.2.4"
+  }
 }
