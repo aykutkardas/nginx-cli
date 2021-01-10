@@ -2,7 +2,7 @@
   "name": "nginx-cli",
   "version": "0.0.1",
   "description": "Allows viewing and managing Nginx configuration files.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,6 +25,9 @@
   },
   "homepage": "https://github.com/aykutkardas/nginx-cli#readme",
   "dependencies": {
-    "yargs": "^13.2.4"
+    "cli-table3": "^0.6.0",
+    "colors": "^1.4.0",
+    "commander": "^6.2.1",
+    "inquirer": "^7.3.3"
   }
 }
