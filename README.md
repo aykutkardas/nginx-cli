@@ -2,7 +2,7 @@
 
 Allows viewing and managing Nginx configuration files. It simplifies the relationship between `sites_available` and `sites_enabled` and makes it easy to manage.
 
-![ngx preview](https://github.com/aykutkardas/nginx-cli/blob/master/preview.gif?raw=true)
+![ngnx preview](https://github.com/aykutkardas/nginx-cli/blob/master/preview.gif?raw=true)
 
 ---
 
@@ -16,14 +16,14 @@ npm install -g nginx-cli
 You must install it as sudo.
 
 ```sh
-$ sudo ngx init
+$ sudo ngnx init
 ```
 
 ### Commands
 
-#### `ngx list`
+#### `ngnx list`
 ```sh
-$ ngx list
+$ ngnx list
 
 # Output #
 ┌───────────┬─────────┐
@@ -35,9 +35,9 @@ $ ngx list
 └───────────┴─────────┘
 ```
 
-#### `ngx enable <conf_name>`
+#### `ngnx enable <conf_name>`
 ```sh
-$ ngx enable test.conf
+$ ngnx enable test.conf
 
 # Output #
 ┌───────────┬─────────┐
@@ -49,9 +49,9 @@ $ ngx enable test.conf
 └───────────┴─────────┘
 ```
 
-#### `ngx disable <conf_name>`
+#### `ngnx disable <conf_name>`
 ```sh
-$ ngx disable test.conf
+$ ngnx disable test.conf
 
 # Output #
 ┌───────────┬─────────┐

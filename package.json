@@ -11,7 +11,7 @@
     "url": "git+https://github.com/aykutkardas/nginx-cli.git"
   },
   "bin": {
-    "ngx": "./src/index.js"
+    "ngnx": "./src/index.js"
   },
   "keywords": [
     "nginx",
