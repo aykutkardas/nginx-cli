@@ -3,7 +3,7 @@ const fs = require("fs");
 module.exports = async function getConfig() {
   const configPath = "/etc/.ngx";
   const error =
-    "Please init ngx. Follow this command:".red + "\n\n 'sudo npx init'";
+    "Please init ngx. Follow this command:".red + "\n\n 'sudo ngx init'";
 
   try {
     const isExist = await fs.existsSync(configPath);
