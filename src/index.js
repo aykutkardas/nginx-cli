@@ -4,10 +4,9 @@ require("colors");
 
 const program = require("commander");
 
-const init = require("./init");
-const list = require("./list");
-
-program.command("init").action(init);
-program.command("list").action(list);
+program.command("init").action(require("./init"));
+program.command("list").action(require("./list"));
+program.command("enable <conf_name>").action(require("./enable"));
+program.command("disable <conf_name>").action(require("./disable"));
 
 program.parse(process.argv);
