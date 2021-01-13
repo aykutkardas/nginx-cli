@@ -3,6 +3,7 @@ const { errors } = require("../constant");
 
 async function isExist(path) {
   const isExist = await fs.existsSync(path);
+
   if (isExist) {
     return true;
   } else {
