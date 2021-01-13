@@ -1,6 +1,6 @@
 const Table = require("cli-table3");
-const readDir = require("./utils/readDir");
-const getConfig = require("./utils/getConfig");
+const readDir = require("../utils/readDir");
+const getConfig = require("../utils/getConfig");
 
 module.exports = async function list() {
   const table = new Table({

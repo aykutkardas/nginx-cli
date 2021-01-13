@@ -1,5 +1,5 @@
-const getConfig = require("./utils/getConfig");
-const link = require("./utils/link");
+const getConfig = require("../utils/getConfig");
+const link = require("../utils/link");
 const list = require("./list");
 
 module.exports = async function enable(conf_name) {

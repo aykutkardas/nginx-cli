@@ -1,10 +1,10 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 
-const link = require("./utils/link");
-const slugify = require("./utils/slugify");
-const getConfig = require("./utils/getConfig");
-const templateReplace = require("./utils/templateReplace");
+const link = require("../utils/link");
+const slugify = require("../utils/slugify");
+const getConfig = require("../utils/getConfig");
+const templateReplace = require("../utils/templateReplace");
 
 const list = require("./list");
 
@@ -18,7 +18,7 @@ module.exports = async function crate() {
   let templateContent = "";
 
   try {
-    const path = __dirname + "/default.conf";
+    const path = __dirname + "/../default.conf";
     templateContent = await fs.readFileSync(path, "utf8");
   } catch (err) {
     console.log(error);

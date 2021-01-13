@@ -1,5 +1,5 @@
 const fs = require("fs");
-const getConfig = require("./utils/getConfig");
+const getConfig = require("../utils/getConfig");
 const list = require("./list");
 
 module.exports = async function disable(conf_name) {
