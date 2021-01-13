@@ -1,10 +1,10 @@
 const fs = require("fs");
-const isExist = require("./isExist");
+const isAccessible = require("./isAccessible");
 
 async function readFile(path, flag) {
-  const exist = await isExist(path);
+  const accesible = await isAccessible(path);
 
-  if (exist) {
+  if (accesible) {
     const file = await fs.readFileSync(path, flag);
     if (file) {
       return file;
