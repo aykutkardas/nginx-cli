@@ -1,54 +1,43 @@
 const inquirer = require("inquirer");
-const fs = require("fs");
 
-module.exports = function init() {
-  const paths = {
-    base: "/etc/nginx",
-    sitesAvailable: "/sites-available/",
-    sitesEnabled: "/sites-enabled/",
-  };
+const { paths } = require("../constant");
+const writeFile = require("../utils/writeFile");
 
+function init() {
   (async () => {
-    const ans1 = await inquirer.prompt([
+    const nginxPath = await inquirer.prompt([
       {
         default: paths.base,
-        message: "nginx path?",
+        message: "What's the path of NGINX?",
         name: "base",
         type: "input",
       },
     ]);
 
-    const ans2 = await inquirer.prompt([
+    const sitesAvailable = await inquirer.prompt([
       {
-        default: ans1.base + paths.sitesAvailable,
-        message: "sites-available path?",
+        default: nginxPath.base + paths.sitesAvailable,
+        message: "What's the path of sites-available?",
         name: "sitesAvailable",
         type: "input",
       },
     ]);
 
-    const ans3 = await inquirer.prompt([
+    const sitesEnabled = await inquirer.prompt([
       {
-        default: ans1.base + paths.sitesEnabled,
-        message: "sites-enabled path?",
+        default: nginxPath.base + paths.sitesEnabled,
+        message: "What's the path of sites-enabled?",
         name: "sitesEnabled",
         type: "input",
       },
     ]);
-    return { ...ans1, ...ans2, ...ans3 };
+    return { ...nginxPath, ...sitesAvailable, ...sitesEnabled };
   })()
-    .then((asnwers) => {
-      const fsPromises = fs.promises;
-
-      fsPromises
-        .access("/etc", fs.constants.R_OK | fs.constants.W_OK)
-        .then(() => {
-          fs.writeFileSync(
-            "/etc/.ngx",
-            JSON.stringify({ paths: asnwers }, null, 2) + "\n"
-          );
-        })
-        .catch(() => console.error("cannot access"));
+    .then(async (asnwers) => {
+      const content = JSON.stringify({ paths: asnwers }, null, 2) + "\n";
+      await writeFile(paths.config, content);
     })
     .catch(console.error);
-};
+}
+
+module.exports = init;
