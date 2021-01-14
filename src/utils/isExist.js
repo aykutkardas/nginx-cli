@@ -7,7 +7,6 @@ async function isExist(path) {
   if (isExist) {
     return true;
   } else {
-    console.log(errors.nonExist);
     return false;
   }
 }

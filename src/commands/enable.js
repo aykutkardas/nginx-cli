@@ -14,10 +14,5 @@ module.exports = async function enable(conf_name) {
 
   if (isLinked) {
     list();
-  } else {
-    console.log(
-      "An unexpected problem occurred!\n\n".red,
-      "Try with `sudo`"
-    );
   }
 };
