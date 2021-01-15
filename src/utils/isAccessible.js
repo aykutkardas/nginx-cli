@@ -1,6 +1,5 @@
 const fs = require("fs");
 const isExist = require("./isExist");
-const { errors } = require("../constant");
 
 async function isAccessible(path) {
   const exist = await isExist(path);
@@ -12,7 +11,6 @@ async function isAccessible(path) {
     } catch (err) {}
   }
 
-  console.log(errors.notAccessible);
   return false;
 }
 
