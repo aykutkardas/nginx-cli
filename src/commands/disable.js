@@ -1,18 +1,20 @@
-const fs = require("fs");
 const getConfig = require("../utils/getConfig");
+const unlink = require("../utils/unlink");
 const list = require("./list");
+const { errors } = require("../constant");
 
-module.exports = async function disable(conf_name) {
+module.exports = async function disable(confName) {
   const config = await getConfig();
   if (!config) return;
 
   const { paths } = config;
-  const path = paths.sitesEnabled + conf_name;
+  const path = paths.sitesEnabled + confName;
 
-  try {
-    fs.unlinkSync(path);
+  const unlinked = await unlink(path);
+
+  if (unlinked) {
     list();
-  } catch (err) {
-    console.log("An unexpected problem occurred!\n\n".red, "Try with `sudo`");
+  } else {
+    console.log(errors.unlinkError.red);
   }
 };
