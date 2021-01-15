@@ -1,17 +1,14 @@
-const Table = require("cli-table3");
 const readDir = require("../utils/readDir");
 const getConfig = require("../utils/getConfig");
+const createTable = require("../utils/createTable");
+const { table } = require("../constant");
 
 module.exports = async function list() {
-  const table = new Table({
-    head: ["Conf Name".blue, "Status".blue],
-  });
-
   const config = await getConfig();
-
   if (!config) return;
 
   const { paths } = config;
+  const data = [];
 
   readDir(paths.sitesAvailable)
     .then(function (sitesAvailable) {
@@ -25,10 +22,11 @@ module.exports = async function list() {
           });
 
           Object.entries(result).forEach(([name, status]) => {
-            table.push([name, status.green]);
+            data.push([name, status.green]);
           });
 
-          console.log(table.toString());
+          const tableData = createTable(table.listHead, data);
+          console.log(tableData);
         })
         .catch(console.error);
     })
