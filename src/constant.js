@@ -8,10 +8,12 @@ const errors = {
 
 const table = {
   listHead: ["Conf Name".blue, "Status".blue],
+  templateHead: ["Template Name".blue],
 };
 
 const paths = {
   config: "/etc/.nginx-cli/config.json",
+  templates: "/etc/.nginx-cli/templates",
   nginxBasePath: "/etc/nginx",
   sitesAvailable: "/sites-available/",
   sitesEnabled: "/sites-enabled/",

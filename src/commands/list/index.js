@@ -1,9 +1,15 @@
-const readDir = require("../utils/readDir");
-const getConfig = require("../utils/getConfig");
-const createTable = require("../utils/createTable");
-const { table } = require("../constant");
+const readDir = require("../../utils/readDir");
+const getConfig = require("../../utils/getConfig");
+const createTable = require("../../utils/createTable");
+const listTemplate = require("./template");
+const { table } = require("../../constant");
 
-module.exports = async function list() {
+module.exports = async function list(listName) {
+  if (listName.args[0] === "template") {
+    listTemplate();
+    return;
+  }
+
   const config = await getConfig();
   if (!config) return;
 
