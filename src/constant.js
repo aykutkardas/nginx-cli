@@ -11,8 +11,8 @@ const table = {
 };
 
 const paths = {
-  config: "/etc/.ngx",
-  base: "/etc/nginx",
+  config: "/etc/.nginx-cli/config.json",
+  nginxBasePath: "/etc/nginx",
   sitesAvailable: "/sites-available/",
   sitesEnabled: "/sites-enabled/",
 };

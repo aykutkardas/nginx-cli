@@ -2,12 +2,13 @@ const inquirer = require("inquirer");
 
 const { paths } = require("../constant");
 const writeFile = require("../utils/writeFile");
+const createConfig = require("../methods/createConfig");
 
 function init() {
   (async () => {
     const nginxPath = await inquirer.prompt([
       {
-        default: paths.base,
+        default: paths.nginxBasePath,
         message: "What's the path of NGINX?",
         name: "base",
         type: "input",
@@ -34,8 +35,18 @@ function init() {
     return { ...nginxPath, ...sitesAvailable, ...sitesEnabled };
   })()
     .then(async (asnwers) => {
-      const content = JSON.stringify({ paths: asnwers }, null, 2) + "\n";
-      await writeFile(paths.config, content);
+      const isCreatedConfig = await createConfig();
+
+      if (isCreatedConfig) {
+        const content = JSON.stringify({ paths: asnwers }, null, 2) + "\n";
+        const isWritedConfig = await writeFile(paths.config, content);
+
+        if (isWritedConfig) {
+          console.log("Success".green);
+        } else {
+          console.log("Unexpected Error!".red);
+        }
+      }
     })
     .catch(console.error);
 }
