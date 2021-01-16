@@ -7,12 +7,13 @@ Allows viewing and managing Nginx configuration files. It simplifies the relatio
 ---
 
 ### Install
+
 ```sh
 npm install -g nginx-cli
 ```
 
-
 ### Initialize
+
 You must install it as sudo.
 
 ```sh
@@ -22,6 +23,7 @@ $ sudo ngnx init
 ### Commands
 
 #### `ngnx list`
+
 ```sh
 $ ngnx list
 
@@ -36,6 +38,7 @@ $ ngnx list
 ```
 
 #### `ngnx enable <conf_name>`
+
 ```sh
 $ ngnx enable test.conf
 
@@ -50,6 +53,7 @@ $ ngnx enable test.conf
 ```
 
 #### `ngnx disable <conf_name>`
+
 ```sh
 $ ngnx disable test.conf
 
@@ -61,4 +65,17 @@ $ ngnx disable test.conf
 ├───────────┼─────────┤
 │ test.conf │         │
 └───────────┴─────────┘
+```
+
+#### `ngnx list template`
+
+```sh
+$ ngnx list template
+
+# Output #
+┌───────────────┐
+│ Template Name │
+├───────────────┤
+│ default.conf  │
+└───────────────┘
 ```
