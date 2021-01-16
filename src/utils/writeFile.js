@@ -8,9 +8,10 @@ async function writeFile(path, body) {
 
   if (accesible) {
     fs.writeFileSync(paths.config, body);
+    return true;
   }
 
-  return null;
+  return false;
 }
 
 module.exports = writeFile;
