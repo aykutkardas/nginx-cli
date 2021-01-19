@@ -5,7 +5,7 @@ const listTemplate = require("./template");
 const { table } = require("../../constant");
 
 module.exports = async function list(listName) {
-  if (listName.args[0] === "template") {
+  if (listName && listName.args[0] === "template") {
     listTemplate();
     return;
   }

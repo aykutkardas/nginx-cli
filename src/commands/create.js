@@ -8,9 +8,9 @@ const templateReplace = require("../utils/templateReplace");
 
 const list = require("./list");
 
-module.exports = async function crate() {
-  const error =
-    "Please init ngx. Follow this command:".red + "\n\n 'sudo ngx init'";
+async function create(params) {
+  let confName = params && params.args[0] || "default.conf";
+
   const config = await getConfig();
   if (!config) return;
 
@@ -18,10 +18,10 @@ module.exports = async function crate() {
   let templateContent = "";
 
   try {
-    const path = __dirname + "/../default.conf";
+    const path = __dirname + "/../" + confName;
     templateContent = await fs.readFileSync(path, "utf8");
   } catch (err) {
-    console.log(error);
+    console.error("Try again as sudo. Make sure the template file you specified exists.".red);
     return null;
   }
 
@@ -84,3 +84,6 @@ module.exports = async function crate() {
     })
     .catch(console.error);
 };
+
+
+module.exports = create;
