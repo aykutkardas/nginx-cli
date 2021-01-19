@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { errors } = require("../constant");
 
 async function isExist(path) {
   const isExist = await fs.existsSync(path);
