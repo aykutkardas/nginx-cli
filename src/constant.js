@@ -4,6 +4,7 @@ const errors = {
   notFoundSourceFile: "The file to link was not found.",
   alreadyLinkedFile: "This file is already linked.",
   unlinkError: "There was a problem removing the file.",
+  createError: "Try again as sudo. Make sure the template file you specified exists."
 };
 
 const table = {

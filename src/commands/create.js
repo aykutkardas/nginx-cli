@@ -1,89 +1,89 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 
+const { errors } = require("../constant");
+
 const link = require("../utils/link");
 const slugify = require("../utils/slugify");
 const getConfig = require("../utils/getConfig");
+const parseTemplate = require("../utils/parseTemplate");
 const templateReplace = require("../utils/templateReplace");
-
 const list = require("./list");
 
 async function create(params) {
-  let confName = params && params.args[0] || "default.conf";
+  let confName = (params && params.args[0]) || "default.conf";
 
   const config = await getConfig();
   if (!config) return;
 
   const { paths } = config;
   let templateContent = "";
+  let templateParams;
 
   try {
     const path = __dirname + "/../" + confName;
     templateContent = await fs.readFileSync(path, "utf8");
+    templateParams = parseTemplate(templateContent);
   } catch (err) {
-    console.error("Try again as sudo. Make sure the template file you specified exists.".red);
+    console.error(errors.createError.red);
     return null;
   }
 
-  (async () => {
-    const ans1 = await inquirer.prompt([
-      {
-        default: "example.com",
-        message: "What's the value of DOMAIN?",
-        name: "DOMAIN",
-        type: "input",
-      },
-    ]);
+  if (templateParams)
+    (async () => {
+      let answers = [];
 
-    const ans2 = await inquirer.prompt([
-      {
-        default: "/home/projects/example",
-        message: "What's the value of ROOT?",
-        name: "ROOT",
-        type: "input",
-      },
-    ]);
+      for (let i = 0; i < templateParams.length; i++) {
+        const answer = await inquirer.prompt([
+          {
+            message: `What's the value of ${templateParams[i]}?`,
+            name: templateParams[i],
+            type: "input",
+          },
+        ]);
 
-    const ans3 = await inquirer.prompt([
-      {
-        default: true,
-        message: "Enable conf file?",
-        name: "enable",
-        type: "confirm",
-      },
-    ]);
-    return { ...ans1, ...ans2, ...ans3 };
-  })()
-    .then((asnwers) => {
-      const confContent = templateReplace(templateContent, {
-        ...asnwers,
-        serverNameSlug: slugify(asnwers.DOMAIN),
-      });
+        answers.push(answer);
+      }
 
-      fs.promises
-        .access("/etc", fs.constants.R_OK | fs.constants.W_OK)
-        .then(async () => {
-          const conf_name = slugify(asnwers.DOMAIN, "_") + ".conf";
-          const currentPath = paths.sitesAvailable + conf_name;
-          const newPath = paths.sitesEnabled + conf_name;
+      const confirm = await inquirer.prompt([
+        {
+          default: true,
+          message: "Enable conf file?",
+          name: "enable",
+          type: "confirm",
+        },
+      ]);
 
-          await fs.writeFileSync(currentPath, confContent);
-          if (asnwers.enable) {
-            const isLinked = await link(currentPath, newPath);
+      const data = { answers: { ...confirm } };
 
-            if (!isLinked) {
-              console.log(
-                "An unexpected problem occurred!\n\n".red,
-                "Try with `sudo`"
-              );
+      answers.forEach(
+        (answer) => (data.answers = { ...data.answers, ...answer })
+      );
+
+      return data.answers;
+    })()
+      .then((asnwers) => {
+        const confContent = templateReplace(templateContent, {
+          ...asnwers,
+          serverNameSlug: slugify(asnwers.DOMAIN),
+        });
+
+        fs.promises
+          .access("/etc", fs.constants.R_OK | fs.constants.W_OK)
+          .then(async () => {
+            const conf_name = slugify(asnwers.DOMAIN, "_") + ".conf";
+            const currentPath = paths.sitesAvailable + conf_name;
+            const newPath = paths.sitesEnabled + conf_name;
+
+            await fs.writeFileSync(currentPath, confContent);
+            if (asnwers.enable) {
+              await link(currentPath, newPath);
             }
-          }
-          list();
-        })
-        .catch((err) => console.error("cannot access", err));
-    })
-    .catch(console.error);
-};
-
+            list();
+          })
+          .catch((err) => console.error("cannot access", err));
+      })
+      .catch(console.error);
+}
 
 module.exports = create;
