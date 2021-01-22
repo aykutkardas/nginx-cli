@@ -2,7 +2,10 @@
 
 Allows viewing and managing Nginx configuration files. It simplifies the relationship between `sites_available` and `sites_enabled` and makes it easy to manage.
 
-![ngnx preview](https://github.com/aykutkardas/nginx-cli/blob/master/preview.gif?raw=true)
+
+
+### *Temporary Demo Preview* 
+![nginx preview](https://github.com/aykutkardas/nginx-cli/blob/master/preview.gif?raw=true)
 
 ---
 
@@ -14,18 +17,26 @@ npm install -g nginx-cli
 
 ### Initialize
 
-You must install it as sudo.
-
 ```sh
-$ sudo ngnx init
+$ nnx init
 ```
 
 ### Commands
 
-#### `ngnx list`
+#### Create Conf
+```sh
+$ nnx create template.conf
+```
+
+#### Create Conf with Template 
+```sh
+$ nnx create template.conf
+```
+
+#### `nnx list`
 
 ```sh
-$ ngnx list
+$ nnx list
 
 # Output #
 ┌───────────┬─────────┐
@@ -37,10 +48,10 @@ $ ngnx list
 └───────────┴─────────┘
 ```
 
-#### `ngnx enable <conf_name>`
+#### `nnx enable <conf_name>`
 
 ```sh
-$ ngnx enable test.conf
+$ nnx enable test.conf
 
 # Output #
 ┌───────────┬─────────┐
@@ -52,10 +63,10 @@ $ ngnx enable test.conf
 └───────────┴─────────┘
 ```
 
-#### `ngnx disable <conf_name>`
+#### `nnx disable <conf_name>`
 
 ```sh
-$ ngnx disable test.conf
+$ nnx disable test.conf
 
 # Output #
 ┌───────────┬─────────┐
@@ -67,10 +78,10 @@ $ ngnx disable test.conf
 └───────────┴─────────┘
 ```
 
-#### `ngnx list template`
+#### `nnx list template`
 
 ```sh
-$ ngnx list template
+$ nnx list template
 
 # Output #
 ┌───────────────┐
