@@ -1,15 +1,12 @@
 # nginx-cli
 
-Allows viewing and managing Nginx configuration files. It simplifies the relationship between `sites_available` and `sites_enabled` and makes it easy to manage.
+![Version](https://img.shields.io/npm/v/nginx-cli?color=%23009639)
 
+![Nginx-Cli Logo](https://raw.githubusercontent.com/aykutkardas/nginx-cli/master/logo.png)
 
+This tool makes it easier to manage nginx configurations and create new ones. It automates the linking of configurations between the `sites-available` and `sites-enabled` directories. It allows you to create templates to create new configurations and use them easily with cli.
 
-### *Temporary Demo Preview* 
-![nginx preview](https://github.com/aykutkardas/nginx-cli/blob/master/preview.gif?raw=true)
-
----
-
-### Install
+## Install
 
 ```sh
 npm install -g nginx-cli
@@ -17,76 +14,110 @@ npm install -g nginx-cli
 
 ### Initialize
 
-```sh
-$ nnx init
+```
+➜  nnx init
+
+? What's the path of NGINX? /etc/nginx
+? What's the path of sites-available? /etc/nginx/sites-available/
+? What's the path of sites-enabled? /etc/nginx/sites-enabled/
 ```
 
-### Commands
+## Usage
 
-#### Create Conf
-```sh
-$ nnx create template.conf
+### **Commands**
+
+`create`
+
+There are two ways to create a new configuration. Using the default template or by selecting a template.
+
+### With Default Template
+
+```
+➜  nnx create
+? What's the value of DOMAIN? example.com
+? What's the value of ROOT? /home/app/example
+? Enable conf file? Yes
 ```
 
-#### Create Conf with Template 
-```sh
-$ nnx create template.conf
+**Default Template Detail:** `/etc/.nginx-cli/templates/default.conf`
+
+```
+server {
+    listen 80;
+    server_name {{DOMAIN}};
+
+    access_log /var/log/nginx/{{DOMAIN}}_access.log;
+    error_log  /var/log/nginx/{{DOMAIN}}_error.log;
+
+    root {{ROOT}};
+    index index.html index.htm index.php;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
 ```
 
-#### `nnx list`
+### With Custom Template
+
+When creating your own template so that it can be parsed, specify the parts you want to edit using the following format.
+
+`{{KEY}}`
+
+Copy this template file you created to the `/etc/.nginx-cli/templates` directory.
+
+You can now call it using the name of this template.
 
 ```sh
-$ nnx list
-
-# Output #
-┌───────────┬─────────┐
-│ Conf Name │ Status  │
-├───────────┼─────────┤
-│ default   │ enabled │
-├───────────┼─────────┤
-│ test.conf │         │
-└───────────┴─────────┘
+➜  nnx create template.conf
 ```
 
-#### `nnx enable <conf_name>`
+`list`
 
-```sh
-$ nnx enable test.conf
+### List Nginx Confs
 
-# Output #
-┌───────────┬─────────┐
-│ Conf Name │ Status  │
-├───────────┼─────────┤
-│ default   │ enabled │
-├───────────┼─────────┤
-│ test.conf │ enabled │
-└───────────┴─────────┘
+```
+➜  nnx list
+
+┌──────────────────┬─────────┐
+│ Conf Name        │ Status  │
+├──────────────────┼─────────┤
+│ example_com.conf │ enabled │
+└──────────────────┴─────────┘
 ```
 
-#### `nnx disable <conf_name>`
+### List Nginx Templates
 
-```sh
-$ nnx disable test.conf
-
-# Output #
-┌───────────┬─────────┐
-│ Conf Name │ Status  │
-├───────────┼─────────┤
-│ default   │ enabled │
-├───────────┼─────────┤
-│ test.conf │         │
-└───────────┴─────────┘
 ```
+➜  nnx list template
 
-#### `nnx list template`
-
-```sh
-$ nnx list template
-
-# Output #
 ┌───────────────┐
 │ Template Name │
 ├───────────────┤
 │ default.conf  │
 └───────────────┘
+```
+
+`enable`
+
+```
+➜  nnx enable example_com.conf
+
+┌──────────────────┬─────────┐
+│ Conf Name        │ Status  │
+├──────────────────┼─────────┤
+│ example_com.conf │ enabled │
+└──────────────────┴─────────┘
+```
+
+`disable`
+
+```
+➜  nnx disable example_com.conf
+
+┌──────────────────┬────────┐
+│ Conf Name        │ Status │
+├──────────────────┼────────┤
+│ example_com.conf │        │
+└──────────────────┴────────┘
 ```
