@@ -1,6 +1,6 @@
 {
   "name": "nginx-cli",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Allows viewing and managing Nginx configuration files.",
   "main": "src/index.js",
   "scripts": {
